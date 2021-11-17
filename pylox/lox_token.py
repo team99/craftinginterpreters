@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
-from .token_type import TokenType
+
+from .lox_token_type import TokenType
 
 keywords = {
     "and": TokenType.AND,
@@ -8,17 +9,17 @@ keywords = {
     "else": TokenType.ELSE,
     "false": TokenType.FALSE,
     "for": TokenType.FOR,
-    "fun": TokenType.FUN,
     "if": TokenType.IF,
     "nil": TokenType.NIL,
     "or": TokenType.OR,
+    "fun": TokenType.FUN,
     "print": TokenType.PRINT,
     "return": TokenType.RETURN,
-    "super": TokenType.SUPER,
     "this": TokenType.THIS,
+    "super": TokenType.SUPER,
     "true": TokenType.TRUE,
-    "var": TokenType.VAR,
     "while": TokenType.WHILE,
+    "var": TokenType.VAR,
 }
 
 

@@ -1,10 +1,10 @@
 import logging
 import sys
+from dataclasses import dataclass, field
+from typing import Any
 
 from .lox_token import Token, keywords
-from .token_type import TokenType
-from typing import Any
-from dataclasses import dataclass, field
+from .lox_token_type import TokenType
 
 # we use this to ensure we don't try to execute that
 # has a known error
@@ -25,12 +25,11 @@ def throw_error(line: int, message: str):
 
 def report_error(line: int, message: str):
     logging.error(f"{line}: {message}")
-    had_error = True
+    # had_error = True
 
 
 @dataclass
 class Scanner:
-
     source: str
     tokens: list[Token] = field(default_factory=list)
     start: int = 0
@@ -50,64 +49,65 @@ class Scanner:
 
     def scan_token(self) -> None:
         c = self.advance()
-        match c:
-            case "(":
-                self.add_token(TokenType.LEFT_PAREN)
-            case ")":
-                self.add_token(TokenType.RIGHT_PAREN)
-            case "{":
-                self.add_token(TokenType.LEFT_BRACE)
-            case "}":
-                self.add_token(TokenType.RIGHT_BRACE)
-            case ",":
-                self.add_token(TokenType.COMMA)
-            case ".":
-                self.add_token(TokenType.DOT)
-            case "-":
-                self.add_token(TokenType.MINUS)
-            case "+":
-                self.add_token(TokenType.PLUS)
-            case ";":
-                self.add_token(TokenType.SEMICOLON)
-            case "/":
-                if self.match("/"):
-                    # A comment goes until the end of the line.
-                    while self.peek() != "\n" and not self.is_at_end():
-                        self.advance()
-                else:
-                    self.add_token(TokenType.SLASH)
-            case "*":
-                self.add_token(TokenType.STAR)
-            # operators
-            case "!":
-                self.add_token(TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG)
-            case "=":
-                self.add_token(TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL)
-            case "<":
-                self.add_token(TokenType.LESS_EQUAL if self.match("=") else TokenType.LESS)
-            case ">":
-                self.add_token(TokenType.GREATER_EQUAL if self.match("=") else TokenType.GREATER)
-            case " " | "\r" | "\t":
-                # ignore whitespace.
-                pass
-            case "\n":
-                self.line += 1
-            case '"':
-                self.string()
-            case _:
-                if c.isdigit():
-                    self.number()
-                elif c.isalpha():
-                    self.identifier()
-                else:
-                    throw_error(self.line, f"Unexpected character {c}")
+        if c == "(":
+            self.add_token(TokenType.LEFT_PAREN)
+        elif c == ")":
+            self.add_token(TokenType.RIGHT_PAREN)
+        elif c == "{":
+            self.add_token(TokenType.LEFT_BRACE)
+        elif c == "}":
+            self.add_token(TokenType.RIGHT_BRACE)
+        elif c == ",":
+            self.add_token(TokenType.COMMA)
+        elif c == ".":
+            self.add_token(TokenType.DOT)
+        elif c == "-":
+            self.add_token(TokenType.MINUS)
+        elif c == "+":
+            self.add_token(TokenType.PLUS)
+        elif c == ";":
+            self.add_token(TokenType.SEMICOLON)
+        elif c == "/":
+            if self.match("/"):
+                # A comment goes until the end of the line.
+                while self.peek() != "\n" and not self.is_at_end():
+                    self.advance()
+            else:
+                self.add_token(TokenType.SLASH)
+        elif c == "*":
+            self.add_token(TokenType.STAR)
+        elif c == "!":
+            self.add_token(TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG)
+        elif c == "=":
+            self.add_token(
+                TokenType.EQUAL_EQUAL if self.match("=") else TokenType.EQUAL
+            )
+        elif c == "<":
+            self.add_token(TokenType.LESS_EQUAL if self.match("=") else TokenType.LESS)
+        elif c == ">":
+            self.add_token(
+                TokenType.GREATER_EQUAL if self.match("=") else TokenType.GREATER
+            )
+        elif c in {" ", "\r", "\t"}:
+            # ignore whitespace.
+            pass
+        elif c == "\n":
+            self.line += 1
+        elif c == '"':
+            self.string()
+        elif c.isdigit():
+            self.number()
+        elif c.isalpha():
+            self.identifier()
+        else:
+            throw_error(self.line, f"Unexpected character {c}")
 
     def advance(self) -> str:
         self.current += 1
         return self.source[self.current - 1]
 
     def add_token(self, token_type: TokenType, literal: Any = None) -> None:
-        text = self.source[self.start:self.current]
+        text = self.source[self.start : self.current]
         self.tokens.append(Token(token_type, text, literal, self.line))
 
     def match(self, expected: str) -> bool:
@@ -136,7 +136,7 @@ class Scanner:
             return
         self.advance()
 
-        value = self.source[self.start + 1:self.current - 1]
+        value = self.source[self.start + 1 : self.current - 1]
         self.add_token(TokenType.STRING, value)
 
     def number(self) -> None:
@@ -146,7 +146,7 @@ class Scanner:
             self.advance()
             while self.peek().isdigit():
                 self.advance()
-        self.add_token(TokenType.NUMBER, self.source[self.start:self.current])
+        self.add_token(TokenType.NUMBER, self.source[self.start : self.current])
 
     def peek_next(self) -> str:
         if self.current + 1 >= len(self.source):
@@ -158,7 +158,7 @@ class Scanner:
         while self.peek().isalnum():
             self.advance()
 
-        text = self.source[self.start:self.current]
+        text = self.source[self.start : self.current]
         token_type = keywords.get(text)
         if not token_type:
             token_type = TokenType.IDENTIFIER
@@ -166,23 +166,35 @@ class Scanner:
         self.add_token(token_type)
 
 
-def run(lines: str):
+def run(lines: str, return_tokens: bool = False):
     scanner = Scanner(lines)
     tokens = scanner.scan_tokens()
+
+    if return_tokens:
+        return tokens
+
     for token in tokens:
         print(token)
 
 
-def main(filename: str):
+def exit():
+    raise SystemExit("Usage: python3 -m yelin-python.lox [script]")
+
+
+def main(filename: str, return_tokens: bool = True):
+    if not filename:
+        exit()
+
     with open(filename) as file:
         text = file.read()
-
-    run(text)
+        tokens = run(text, return_tokens)
+        if tokens:
+            return tokens
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        raise SystemExit("Usage: python3 -m yelin-python.lox [script]")
+        exit()
 
     # TODO to add run prompt
-    main(sys.argv[1])
+    main(sys.argv[1], return_tokens=False)
