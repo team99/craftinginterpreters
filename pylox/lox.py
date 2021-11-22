@@ -178,7 +178,7 @@ def run(lines: str, return_tokens: bool = False):
 
 
 def exit():
-    raise SystemExit("Usage: python3 -m yelin-python.lox [script]")
+    raise SystemExit("Usage: python3 -m pylox.lox [script]")
 
 
 def main(filename: str, return_tokens: bool = True):
