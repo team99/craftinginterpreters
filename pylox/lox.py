@@ -34,6 +34,11 @@ TOKENS_AND_TYPES = {
     "{": TokenType.LEFT_BRACE,
     "}": TokenType.RIGHT_BRACE,
     ",": TokenType.COMMA,
+    ".": TokenType.DOT,
+    "-": TokenType.MINUS,
+    "+": TokenType.PLUS,
+    ";": TokenType.SEMICOLON,
+    "*": TokenType.STAR,
 }
 
 
@@ -60,15 +65,6 @@ class Scanner:
         c = self.advance()
         if c in TOKENS_AND_TYPES:
             self.add_token(TOKENS_AND_TYPES.get(c))
-
-        elif c == ".":
-            self.add_token(TokenType.DOT)
-        elif c == "-":
-            self.add_token(TokenType.MINUS)
-        elif c == "+":
-            self.add_token(TokenType.PLUS)
-        elif c == ";":
-            self.add_token(TokenType.SEMICOLON)
         elif c == "/":
             if self.match("/"):
                 # A comment goes until the end of the line.
@@ -76,8 +72,6 @@ class Scanner:
                     self.advance()
             else:
                 self.add_token(TokenType.SLASH)
-        elif c == "*":
-            self.add_token(TokenType.STAR)
         elif c == "!":
             self.add_token(TokenType.BANG_EQUAL if self.match("=") else TokenType.BANG)
         elif c == "=":
