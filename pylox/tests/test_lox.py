@@ -53,15 +53,12 @@ def test_multiple(print_multiple):
         Token(TokenType.PRINT, lexeme="print", literal=None, line=1),
         Token(TokenType.NUMBER, lexeme="1", literal="1", line=1),
         Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=1),
-
         Token(TokenType.PRINT, lexeme="print", literal=None, line=2),
         Token(TokenType.NUMBER, lexeme="2", literal="2", line=2),
         Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=2),
-
         Token(TokenType.PRINT, lexeme="print", literal=None, line=4),
         Token(TokenType.NUMBER, lexeme="3", literal="3", line=4),
         Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=4),
-
         Token(TokenType.EOF, lexeme="", literal=None, line=6),
     ]
     assert lox.main(print_multiple) == expected

@@ -29,11 +29,11 @@ def report_error(line: int, message: str):
 
 
 TOKENS_AND_TYPES = {
-    "(" : TokenType.LEFT_PAREN,
-    ")" : TokenType.RIGHT_PAREN,
-    "{" : TokenType.LEFT_BRACE,
-    "}" : TokenType.RIGHT_BRACE,
-    "," : TokenType.COMMA,
+    "(": TokenType.LEFT_PAREN,
+    ")": TokenType.RIGHT_PAREN,
+    "{": TokenType.LEFT_BRACE,
+    "}": TokenType.RIGHT_BRACE,
+    ",": TokenType.COMMA,
 }
 
 
