@@ -28,6 +28,15 @@ def report_error(line: int, message: str):
     # had_error = True
 
 
+TOKENS_AND_TYPES = {
+    "(" : TokenType.LEFT_PAREN,
+    ")" : TokenType.RIGHT_PAREN,
+    "{" : TokenType.LEFT_BRACE,
+    "}" : TokenType.RIGHT_BRACE,
+    "," : TokenType.COMMA,
+}
+
+
 @dataclass
 class Scanner:
     source: str
@@ -49,16 +58,9 @@ class Scanner:
 
     def scan_token(self) -> None:
         c = self.advance()
-        if c == "(":
-            self.add_token(TokenType.LEFT_PAREN)
-        elif c == ")":
-            self.add_token(TokenType.RIGHT_PAREN)
-        elif c == "{":
-            self.add_token(TokenType.LEFT_BRACE)
-        elif c == "}":
-            self.add_token(TokenType.RIGHT_BRACE)
-        elif c == ",":
-            self.add_token(TokenType.COMMA)
+        if c in TOKENS_AND_TYPES:
+            self.add_token(TOKENS_AND_TYPES.get(c))
+
         elif c == ".":
             self.add_token(TokenType.DOT)
         elif c == "-":

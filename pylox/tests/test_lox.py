@@ -26,3 +26,42 @@ def test_numbers(numbers):
         Token(TokenType.EOF, lexeme="", literal=None, line=2),
     ]
     assert lox.main(numbers) == expected
+
+
+@pytest.fixture
+def print_number():
+    return "pylox/tests/test_source_files/03_print.lox"
+
+
+def test_print_numbers(print_number):
+    expected = [
+        Token(TokenType.PRINT, lexeme="print", literal=None, line=1),
+        Token(TokenType.NUMBER, lexeme="1", literal="1", line=1),
+        Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=1),
+        Token(TokenType.EOF, lexeme="", literal=None, line=2),
+    ]
+    assert lox.main(print_number) == expected
+
+
+@pytest.fixture
+def print_multiple():
+    return "pylox/tests/test_source_files/04_multiple_print.lox"
+
+
+def test_multiple(print_multiple):
+    expected = [
+        Token(TokenType.PRINT, lexeme="print", literal=None, line=1),
+        Token(TokenType.NUMBER, lexeme="1", literal="1", line=1),
+        Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=1),
+
+        Token(TokenType.PRINT, lexeme="print", literal=None, line=2),
+        Token(TokenType.NUMBER, lexeme="2", literal="2", line=2),
+        Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=2),
+
+        Token(TokenType.PRINT, lexeme="print", literal=None, line=4),
+        Token(TokenType.NUMBER, lexeme="3", literal="3", line=4),
+        Token(TokenType.SEMICOLON, lexeme=";", literal=None, line=4),
+
+        Token(TokenType.EOF, lexeme="", literal=None, line=6),
+    ]
+    assert lox.main(print_multiple) == expected
