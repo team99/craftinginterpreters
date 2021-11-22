@@ -32,7 +32,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          cd key_generator/source
           pip install pytest
       - name: Run unit tests
         run: |
