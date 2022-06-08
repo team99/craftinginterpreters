@@ -16,3 +16,8 @@ xcuserdata/
 # Dart stuff.
 /tool/.dart_tool/
 /tool/.packages
+
+# python cache
+/__pycache__/
+*.pyc
+*.swp
